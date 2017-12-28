@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:component-scan base-package="com.lc">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+	</context:component-scan>
+	
+	<!--自动注册基于注解风格的DefaultAnnotationHandlerMapping和AnotationMethodHandlerAdapter-->
+    <!--此处使用conversionService为了自从注册HttpMessageConverter支持@RequestBody和@ResponseBody-->
+    <mvc:annotation-driven conversion-service="conversionService"/>
+    
+    <!-- HandlerMapping -->
+	<bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"></bean>
+	<!-- HandlerAdapter -->
+	<bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"></bean>
+	
+	<!-- 用于解析RequestBody -->
+	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean"></bean>
+
+	<!-- 允许对静态资源文件的访问 -->
+    <mvc:default-servlet-handler />
+
+    <!-- ftl参数配置 -->  
+    <bean id="freemarkerConfiguration"  
+        class="org.springframework.beans.factory.config.PropertiesFactoryBean">  
+        <property name="location" value="/WEB-INF/freemarker.properties" />  
+    </bean>  
+
+    <bean id="viewResolverFtl"
+	    class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+	    <property name="viewClass"
+	        value="org.springframework.web.servlet.view.freemarker.FreeMarkerView" />
+	    <property name="suffix" value=".ftl" />
+	    <property name="contentType" value="text/html;charset=UTF-8" />
+	    <property name="exposeRequestAttributes" value="true" />
+	    <property name="exposeSessionAttributes" value="true" />
+	    <property name="exposeSpringMacroHelpers" value="true" />
+	    <property name="requestContextAttribute" value="request" />
+	    <property name="cache" value="true" />
+	    <property name="order" value="0" />
+	</bean>
+
+</beans>
